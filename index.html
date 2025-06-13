@@ -4,33 +4,101 @@
   <meta charset="UTF-8" />
   <title>极大值计算器</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background-color: #f0f0f0; }
-    label, select, input { display: block; margin-bottom: 10px; }
-    input, select { padding: 5px; width: 180px; }
-    button { padding: 8px 16px; margin-top: 10px; }
-    .result { margin-top: 20px; font-weight: bold; white-space: pre-line; }
-    
-    /* 标题居中样式 */
-    h2 {
-      display: flex;          /* 使用Flex布局实现内容居中 */
-      align-items: center;    /* 垂直居中 */
+    /* 重置默认边距 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body { 
+      font-family: Arial, sans-serif; 
+      background-color: #f0f0f0; 
+      min-height: 100vh; /* 确保占满整个视口高度 */
+      display: flex;
       justify-content: center; /* 水平居中 */
-      margin: 25px 0 15px;    /* 调整标题上下边距 */
+      align-items: center; /* 垂直居中 */
+    }
+    
+    .calculator-container {
+      background-color: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      max-width: 550px;
+      width: 90%; /* 小屏幕下自适应 */
+    }
+    
+    label { 
+      display: block; 
+      margin-bottom: 15px; 
+      font-size: 15px;
+      color: #2d3748;
+    }
+    
+    select, input { 
+      width: 100%;
+      padding: 10px 12px;
+      border: 2px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 15px;
+      transition: border-color 0.2s;
+    }
+    
+    select:focus, input:focus {
+      outline: none;
+      border-color: #4299e1;
+    }
+    
+    button { 
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin-top: 20px;
+      background-color: #4299e1;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    button:hover {
+      background-color: #3182ce;
     }
 
-    /* 新增：优纪文字样式 */
+    .result { 
+      margin-top: 25px; 
+      padding: 18px;
+      background-color: #f7fafc;
+      border-radius: 8px;
+      border-left: 4px solid #4299e1;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #2d3748;
+    }
+    
+    /* 标题样式 */
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #1a202c;
+    }
+
     .unique-text {
-      font-style: italic;     /* 斜体 */
-      font-size: 36px;        /* 增大字体（原24px→36px） */
-      margin: 0 12px;         /* 左右增加边距，更贴近主标题 */
-      display: inline-block;  /* 确保transform生效 */
-      animation: colorChange 5s infinite; /* 颜色变换动画 */
-      transform: skew(-8deg); /* 整体倾斜效果（角度可调整） */
-      transform-origin: center; /* 倾斜中心在文字中心 */
-      font-weight: bold;      /* 加粗增强视觉效果 */
+      font-style: italic;
+      font-size: 36px;
+      margin: 0 12px;
+      display: inline-block;
+      animation: colorChange 5s infinite;
+      transform: skew(-8deg);
+      transform-origin: center;
+      font-weight: bold;
+      color: #48bb78; /* 优纪文字颜色更突出 */
     }
 
-    /* 颜色自动变换动画 */
     @keyframes colorChange {
       0% { color: #FF5733; } 
       20% { color: #33FF57; }
@@ -42,32 +110,33 @@
   </style>
 </head>
 <body>
-  <!-- 标题包含优纪，使用Flex居中 -->
-  <h2>秘境血魔流搭配计算器 <span class="unique-text">优纪</span></h2>
-  
-  <label>已安装卡牌词条:
-    <select id="n">
-      <option value="4.4">聚合驭电猎狩</option>
-      <option value="5.4">聚合智澜驭电</option>
-      <option value="1.6">驭电</option>
-      <option value="2.2">智澜</option>
-    </select>
-  </label>
-  <label>准备安装的卡牌词条:
-    <select id="m">
-      <option value="4.4">聚合驭电</option>
-      <option value="5.4">聚合智澜</option>
-      <option value="1.6">驭电</option>
-      <option value="2.2">智澜</option>
-    </select>
-  </label>
-  <label>已携带永恒血池数量: <input type="number" id="o" value="0" step="any"></label>
-  <label>已携带生命之力数量: <input type="number" id="p" value="0" step="any"></label>
-  <label>已携带狂热数量: <input type="number" id="q" value="0" step="any"></label>
-  <label>除去神行和已携带卡后的格子: <input type="number" id="total" value="0"></label>
-  <button onclick="calculate()">计算最大等效武装</button>
+  <div class="calculator-container">
+    <h2>秘境血魔流搭配计算器 <span class="unique-text">请关注b站优纪</span></h2>
+    
+    <label>已安装卡牌词条:
+      <select id="n">
+        <option value="4.4">聚合驭电猎狩</option>
+        <option value="5.4">聚合智澜驭电</option>
+        <option value="1.6">驭电</option>
+        <option value="2.2">智澜</option>
+      </select>
+    </label>
+    <label>准备安装的卡牌词条:
+      <select id="m">
+        <option value="4.4">聚合驭电</option>
+        <option value="5.4">聚合智澜</option>
+        <option value="1.6">驭电</option>
+        <option value="2.2">智澜</option>
+      </select>
+    </label>
+    <label>已携带永恒血池数量: <input type="number" id="o" value="0" step="any"></label>
+    <label>已携带生命之力数量: <input type="number" id="p" value="0" step="any"></label>
+    <label>已携带狂热数量: <input type="number" id="q" value="0" step="any"></label>
+    <label>除去神行和已携带卡后的格子: <input type="number" id="total" value="0"></label>
+    <button onclick="calculate()">计算最大等效武装</button>
 
-  <div class="result" id="result"></div>
+    <div class="result" id="result"></div>
+  </div>
 
   <script>
     function floor(x) {
@@ -91,20 +160,34 @@
 
       let maxVal = -Infinity;
       let maxCombo = '';
+      let bestPanelValue = 0;
 
-      for (let x = 0; x <= total; x++) {  // 已修复循环范围
+      // 边界检查：如果总格子数为0，直接提示
+      if (total <= 0) {
+        document.getElementById("result").innerText = "请输入有效的格子数量（大于0）";
+        return;
+      }
+
+      for (let x = 0; x <= total; x++) {
         for (let y = 0; y <= total - x; y++) {
           let z = total - x - y;
           const val = computeValue(x, y, z, n, m, o, p, q);
+          
+          // 计算面板武装值（term1 + constant）
+          const term1 = 5 * floor(m * o + n * x) * n * y;
+          const constant = 500 + 5 * floor(m * o + n * x) * m * p;
+          const panelValue = term1 + constant;
+          
           if (val > maxVal) {
             maxVal = val;
             maxCombo = `(${x}, ${y}, ${z})`;
+            bestPanelValue = panelValue;
           }
         }
       }
 
       document.getElementById("result").innerText =
-        `最大值：${maxVal.toFixed(2)}，对应 (永恒血池,生命之力，狂热) = ${maxCombo}`;
+        `最大值：${maxVal.toFixed(2)}\n对应 (永恒血池, 生命之力, 狂热) = ${maxCombo}\n面板武装：${bestPanelValue.toFixed(2)}`;
     }
   </script>
 </body>
